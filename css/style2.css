@@ -1,0 +1,9 @@
+.switcher input[type="checkbox"]:not(.want-faster):checked ~ .checkbox-label {
+    transition: 0s;
+    color: transparent;
+}
+
+.switcher input[type="checkbox"]:not(.want-faster):checked ~ .checkbox-label::before {
+    color: initial;
+    content: 'Да';
+}

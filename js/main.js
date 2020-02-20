@@ -1,5 +1,7 @@
 "use strict";
 
+const DAY_ARRAY = ['День', 'Дня', 'Дней'];
+
 const DATA = {
     whichSite: ['landing', 'multiPage', 'onlineStore'],
     price: [4000, 8000, 26000],
@@ -23,9 +25,18 @@ const startButton = document.querySelector('.start-button'),
     endButton = document.querySelector('.end-button'),
     total = document.querySelector('.total'),
     fastRange = document.querySelector('.fast-range'),
+    rangeDeadline = document.querySelector('.range-deadline'),
     totalPriceSum = document.querySelector('.total_price__sum'),
     adapt = document.querySelector('#adapt'),
-    mobileTemplates = document.querySelector('#mobileTemplates');
+    mobileTemplates = document.querySelector('#mobileTemplates'),
+    typeSite = document.querySelector('.type-site'),
+    maxDeadline = document.querySelector('.max-deadline'),
+    deadlineValue = document.querySelector('.deadline-value');
+
+function declOfNum(n, titles) {
+    return n + ' ' + titles[n % 10 === 1 && n % 100 !== 11 ?
+        0 : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20) ? 1 : 2];
+}
 
 function showElem (elem) {
     elem.style.display = 'block';
@@ -35,10 +46,24 @@ function hideElem (elem) {
     elem.style.display = 'none';
 }
 
+function renderTextContent(result, site, maxDay) {
+
+    totalPriceSum.textContent = result.toString();
+    typeSite.textContent = site;
+    maxDeadline.textContent = declOfNum(maxDay, DAY_ARRAY);
+
+    if (fastRange.style.display === 'none') {
+        rangeDeadline.value = rangeDeadline.max;
+    }
+    deadlineValue.textContent = declOfNum(rangeDeadline.value, DAY_ARRAY);
+}
+
 function priceCalculation(elem) {
     let result = 0,
         index = 0,
-        options = [];
+        options = [],
+        site = '',
+        maxDeadlineDay = DATA.deadlineDay[index][1];
 
     if (elem.name === 'whichSite') {
         for (const item of formCalculate.elements) {
@@ -51,12 +76,19 @@ function priceCalculation(elem) {
     for (const item of formCalculate.elements) {
         if (item.name === 'whichSite' && item.checked) {
             index = DATA.whichSite.indexOf(item.value);
+
+            site = item.dataset.site;
+            maxDeadlineDay = DATA.deadlineDay[index][1];
+
+            rangeDeadline.min = DATA.deadlineDay[index][0];
+            rangeDeadline.max = DATA.deadlineDay[index][1];
+
+            /* I have put this code here, because it is not text rendering*/
+
         } else if (item.classList.contains('calc-handler') && item.checked) {
             options.push(item.value);
         }
     }
-
-    result += DATA.price[index];
 
     options.forEach(function(key){
         if (typeof(DATA[key]) === 'number') {
@@ -74,8 +106,9 @@ function priceCalculation(elem) {
         }
     });
 
+    result += DATA.price[index];
 
-    totalPriceSum.textContent = result.toString();
+    renderTextContent(result, site, maxDeadlineDay);
 }
 
 function handlerCallBackForm(event) {
