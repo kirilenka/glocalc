@@ -31,7 +31,9 @@ const startButton = document.querySelector('.start-button'),
     mobileTemplates = document.querySelector('#mobileTemplates'),
     typeSite = document.querySelector('.type-site'),
     maxDeadline = document.querySelector('.max-deadline'),
-    deadlineValue = document.querySelector('.deadline-value');
+    deadlineValue = document.querySelector('.deadline-value'),
+    buttonListYesNo = document.querySelectorAll('.switcher input:not(.want-faster)'),
+    labelListYesNo = document.querySelectorAll('.switcher input:not(.want-faster) ~ .checkbox-label');
 
 function declOfNum(n, titles) {
     return n + ' ' + titles[n % 10 === 1 && n % 100 !== 11 ?
@@ -142,3 +144,13 @@ endButton.addEventListener('click', function () {
 });
 
 formCalculate.addEventListener('change', handlerCallBackForm);
+
+
+for (let idx = 0; idx < buttonListYesNo.length; idx ++) {
+
+    buttonListYesNo[idx].addEventListener('change', function() {
+        console.log(idx);
+        labelListYesNo[idx].textContent = buttonListYesNo[idx].checked ? 'Да' : 'Нет';
+    });
+
+}
